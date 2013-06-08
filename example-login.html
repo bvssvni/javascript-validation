@@ -8,6 +8,23 @@
         </script>
         <script language="javascript">
 
+// This function is used to do custom validation of password.
+function containsAtLeastOneNumber (text) {
+    for (var i = 0; i < text.length; i++) {
+        var ch = text [i];
+        if ("0123456789".indexOf (ch) > 0) {
+            return true;
+        }
+    }
+    
+    return false;
+}
+
+// This function returns error message for custom validation of password.
+function errorAtContainingNumber (text) {
+    return "Must constain at least one number";
+}
+
 function loaded () {
     validation_start (
         validation_default_settings (),
@@ -15,7 +32,9 @@ function loaded () {
         [validation_required_field ('username', 'usernameError'),
         validation_username ('username', 'usernameError'),
         validation_required_field ('password', 'passwordError'),
-        validation_min_length ('password', 'passwordError', 6)]
+        validation_min_length ('password', 'passwordError', 6),
+        validation_callback ('password', 'passwordError',
+            containsAtLeastOneNumber, errorAtContainingNumber)]
     );
 }
 
@@ -52,5 +71,26 @@ function loaded () {
                 </tr>
             </form>
         </table>
+
+        <hr />
+
+        <p>
+            This demo shows
+        </p>
+        <ul>
+            <li>Validation by time interval</li>
+            <li>Required field</li>
+            <li>Regular expression</li>
+            <li>Minimum length</li>
+            <li>Custom validation through callback</li>
+        </ul>
+
+        <hr />
+        <p>
+            License: LGPL<br />
+            Author: Sven Nilsen<br />
+            Website: <a target="_blank"
+                        href="http://www.cutoutpro.com">Cutout Pro</a>
+        </p>
     </body>
 </html>

@@ -44,20 +44,94 @@ function validation_default_settings () {
 // Some methods have extra options.
 
 function validation_required_field (inputId, errorId) {
+    if (inputId === null) {
+        console.log ("inputId is null");
+        return null;
+    }
+    if (errorId === null) {
+        console.log ("errorId is null");
+        return null;
+    }
+    
     return ["REQUIRED_FIELD", inputId, errorId];
 }
 
+// minLength            int
 function validation_min_length (inputId, errorId, minLength) {
+    if (inputId === null) {
+        console.log ("inputId is null");
+        return null;
+    }
+    if (errorId === null) {
+        console.log ("errorId is null");
+        return null;
+    }
+    if (minLength === null) {
+        console.log ("minLength is null");
+        return null;
+    }
+    
     return ["MIN_LENGTH", inputId, errorId, minLength];
 }
 
+// regexp               Regular expression (Javascript builtin)
+// errorMessage         string
 function validation_regexp (inputId, errorId, regexp, errorMessage) {
+    if (inputId === null) {
+        console.log ("inputId is null");
+        return null;
+    }
+    if (errorId === null) {
+        console.log ("errorId is null");
+        return null;
+    }
+    if (regexp === null) {
+        console.log ("regexp is null");
+        return null;
+    }
+    if (errorMessage === null) {
+        console.log ("errorMessage is null");
+        return null;
+    }
+    
     return ["REGEXP", inputId, errorId, regexp, errorMessage];
 }
 
 function validation_username (inputId, errorId) {
+    if (inputId === null) {
+        console.log ("inputId is null");
+        return null;
+    }
+    if (errorId === null) {
+        console.log ("errorId is null");
+        return null;
+    }
+    
     return ["REGEXP", inputId, errorId, VALIDATION_REGEXP_USERNAME,
         VALIDATION_ERROR_INVALID_USERNAME];
+}
+
+// validateCallback     function (text) {}
+// errorCallback        function (text) {}
+function validation_callback (inputId, errorId, validateCallback, errorCallback) {
+    if (inputId === null) {
+        console.log ("inputId is null");
+        return null;
+    }
+    if (errorId === null) {
+        console.log ("errorId is null");
+        return null;
+    }
+    if (validateCallback === null) {
+        console.log ("validateCallback is null");
+        return null;
+    }
+    if (errorCallback === null) {
+        console.log ("errorCallback is null");
+        return null;
+    }
+    
+    return ["CALLBACK", inputId, errorId, validateCallback, errorCallback];
 }
 
 //////// VALIDATE
@@ -180,14 +254,52 @@ function validation_validate_regex (settings, validation) {
     return true;
 }
 
+function validation_validate_callback (settings, validation) {
+    var type = validation [0];
+    if (type != "CALLBACK") {
+        // Ignore other types of validation.
+        return true;
+    }
+
+    var inputId = validation [1];
+    var errorId = validation [2];
+    var validateCallback = validation [3];
+    var errorCallback = validation [4];
+    var input = document.getElementById (inputId);
+    var error = document.getElementById (errorId);
+    if (input === null) {
+        console.log ("input is null '" + inputId + "'");
+        return true;
+    }
+    if (error === null) {
+        console.log ("error is null '" + errorId + "'");
+        return true;
+    }
+
+    var valid = validateCallback (input.value);
+    if (!valid) {
+        var errorMessage = errorCallback (input.value);
+        input.style.backgroundColor = settings.backgroundColorError;
+        error.textContent = errorMessage;
+        return false;
+    }
+    
+    input.style.backgroundColor = "";
+    error.textContent = "";
+    return true;
+}
+
 function validation_validate (settings, validationList) {
     var valid = true;
     validation_clear (validationList);
     for (var i = 0; i < validationList.length; i++) {
+        // All validation tests return true for other types of validation.
+        // This makes it possible to chain the validations together.
         var validation = validationList [i];
         valid &= validation_validate_required_field (settings, validation);
         valid &= validation_validate_min_length (settings, validation);
         valid &= validation_validate_regex (settings, validation);
+        valid &= validation_validate_callback (settings, validation);
         if (!valid) {
             break;
         }
