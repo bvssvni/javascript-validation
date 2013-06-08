@@ -8,7 +8,7 @@ Validates HTML form every 100 milliseconds,
 giving user immediately feedback when typing.  
 The button(s) are disabled if the form is not valid.  
 
-[See Example](http://htmlpreview.github.com/?https://raw.github.com/bvssvni/javascript-validation/master/example-login.html)
+![See Example](http://htmlpreview.github.com/?https://raw.github.com/bvssvni/javascript-validation/master/example-login.html)
 
 ###Features
 
@@ -17,4 +17,5 @@ The button(s) are disabled if the form is not valid.
 * Required field
 * Minimum length
 * Regular expression
+* Custom validation through callbacks
 * Typical user name (alphanumeric + '-' + '_')
