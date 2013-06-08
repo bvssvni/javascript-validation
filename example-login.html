@@ -1,0 +1,56 @@
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <title>
+            javascript-validation Example: Log In
+        </title>
+        <script type="text/javascript" src="validation/validation.js">
+        </script>
+        <script language="javascript">
+
+function loaded () {
+    validation_start (
+        validation_default_settings (),
+        ['logInButton'],
+        [validation_required_field ('username', 'usernameError'),
+        validation_username ('username', 'usernameError'),
+        validation_required_field ('password', 'passwordError'),
+        validation_min_length ('password', 'passwordError', 6)]
+    );
+}
+
+        </script>
+    </head>
+    <body onload="loaded ();">
+        <h1>javascript-validation Example: Log In</h1>
+        <table>
+            <form>
+                <tr>
+                    <td>Username:</td>
+                    <td>
+                        <input type="text"
+                               id ="username"
+                               name="username" />
+                    </td>
+                    <td><div id="usernameError"></div></td>
+                </tr>
+                <tr>
+                    <td>Password:</td>
+                    <td>
+                        <input type="password"
+                               id="password"
+                               name="password" />
+                    </td>
+                    <td><div id="passwordError"></div></td>
+                </tr>
+                <tr>
+                    <td colspan="2" align="right">
+                        <input type="submit" 
+                               value="Log In"
+                               id="logInButton"/>
+                    </td>
+                </tr>
+            </form>
+        </table>
+    </body>
+</html>
