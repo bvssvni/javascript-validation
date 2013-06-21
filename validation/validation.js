@@ -1,10 +1,12 @@
 /**
  * javascript-validation, A javascript library for validating HTML forms.
  *
- * @version 0.000, http://isprogrammingeasy.blogspot.no/2012/08/angular-degrees-versioning-notation.html
+ * @version 0.001, http://isprogrammingeasy.blogspot.no/2012/08/angular-degrees-versioning-notation.html
  * @license GNU Lesser General Public License, http://www.gnu.org/copyleft/lesser.html
  * @author  Sven Nilsen, http://www.cutoutpro.com
  * @link    http://www.github.com/bvssvni/javascript-validation
+ *
+ * 0.001    Added 'beforeValidationCallback' and 'overrideDisabled' flag.
  */
 
 /******* USAGE
@@ -29,12 +31,18 @@ var VALIDATION_ERROR_INVALID_USERNAME = "Only a-z, A-Z, '-' and '_' allowed";
 
 // Creates default settings.
 // If you need custom settings, copy this function and modify it.
+// beforeValidationCallback     function () {}
+// If you have custom logic for enabling the buttons,
+// you can do it in 'beforeValidationCallback' and
+// set 'overrideDisabled' to false.
 function validation_default_settings () {
     return {
       backgroundColorError: "#FFAAAA",
       requiredFieldMessage: "Required field",
       minLengthMessage:     "Minimum length {0} characters",
-      validateIntervalInMilliseconds: 100
+      validateIntervalInMilliseconds: 100,
+      beforeValidationCallback: null,
+      overrideDisabled: true
     };
 }
 
@@ -142,6 +150,11 @@ function validation_callback (inputId, errorId, validateCallback, errorCallback)
 function validation_clear (validationList) {
     for (var i = 0; i < validationList.length; i++) {
         var validation = validationList [i];
+        var type = validation [0];
+        if (type === "REFRESH") {
+            continue;
+        }
+        
         var inputId = validation [1];
         var errorId = validation [2];
         var input = document.getElementById (inputId);
@@ -309,6 +322,10 @@ function validation_validate (settings, validationList) {
 }
 
 function validation_validate_buttons (settings, buttonList, validationList) {
+    if (settings.beforeValidationCallback !== null) {
+        settings.beforeValidationCallback ();
+    }
+
     var valid = validation_validate (settings, validationList);
     for (var i = 0; i < buttonList.length; i++) {
         var buttonId = buttonList [i];
@@ -318,7 +335,11 @@ function validation_validate_buttons (settings, buttonList, validationList) {
             return;
         }
 
-        button.disabled = !valid;
+        if (settings.overrideDisabled) {
+            button.disabled = !valid;
+        } else {
+            button.disabled |= !valid;
+        }
     }
 }
 
